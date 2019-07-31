@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      # spring cloud gateway 路由配置
+      routes:
+        - id: pathRoute
+          uri: lb://expshare-business
+          predicates:
+            - Path=/api/**
+        - id: githubLogin
+          uri: http://localhost:8080
+          predicates:
+            - Path=/login/github/**
+          filters:
+            - GithubAuth
+      # cors跨域配置
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: "true"
+  redis:
+    host: redis_host
+    port: redis_port
+    database: 0
+    password: redis_password
+
+#  spring security 集成了oauth2.0，提供了常见实现如github等，
+#  此处配置不可用，未使用spring security，手动集成oauth2.0
+#  参考后面github配置与相关filter
+#
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          github:
+#            client-id: 8b3d20a67541139ce356
+#            client-secret: github_client_secret
+#            redirectUri: http://localhost:8080/callback
+#            对于github，只需要client-id和client-secret配置
+#            authorization-uri: https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s&state=%s
+#            token-uri: https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&state=%s
+#            user-info-uri: https://api.github.com/user?access_token=%s
+
+server:
+  port: 9003
+  servlet:
+    session:
+      cookie:
+        max-age: 365
+
+# eureka配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9001/eureka
+
+# github登录配置
+github:
+  client:
+    clientId: 8b3d20a67541139ce356
+    clientSecret: github_client_secret
+    accessTokenUri: https://github.com/login/oauth/access_token
+    userAuthorizationUri: https://github.com/login/oauth/authorize
+    clientAuthenticationScheme: form
+    redirectUri: http://localhost:8080/callback
+  resource:
+    userInfoUri: https://api.github.com/user?access_token=
+

@@ -1,0 +1,21 @@
+server:
+  port: 9002
+  
+spring:
+  data:
+    mongodb:
+      database: mongo_db
+      host: mongo_host
+      port: mongo_port
+      username: mongo_username
+      password: mongo_password
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: es_host:9300
+  application:
+    name: expshare-business
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:9001/eureka

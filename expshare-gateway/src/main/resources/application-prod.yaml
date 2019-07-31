@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: pathRoute
+          uri: lb://expshare-business
+          predicates:
+            - Path=/api/**
+        - id: githubLogin
+          uri: https://www.freej.top
+          predicates:
+            - Path=/login/github/**
+          filters:
+            - GithubAuth
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - https://www.freej.top
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: "true"
+  redis:
+    host: redis_hosts
+    port: redis_port
+    database: 0
+    password: redis_password
+
+server:
+  port: 9003
+  servlet:
+    session:
+      cookie:
+        max-age: 365
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:9001/eureka
+
+github:
+  client:
+    clientId: github_client_id
+    clientSecret: github_client_secret
+    accessTokenUri: https://github.com/login/oauth/access_token
+    userAuthorizationUri: https://github.com/login/oauth/authorize
+    clientAuthenticationScheme: form
+    redirectUri: https://www.freej.top/callback
+  resource:
+    userInfoUri: https://api.github.com/user?access_token=
+
